@@ -1,7 +1,6 @@
 const Pool = require('../Models/db');
 const bcrypt = require('bcrypt');
 
-
 const encryptPassword = async (Password) => {
     let promise = new Promise((res, rej) => {
         let saltRounds = 10;
@@ -11,29 +10,52 @@ const encryptPassword = async (Password) => {
             });
         });
     })
-    return promise.then((res) => {return res})
+    return promise.then((res) => { return res })
 }
 
 const SignUp = async (req, res) => {
     const { email, name, password } = req.body.data;
     let encryptedPassword = await encryptPassword(password);
 
+    const ExistingUser = await Pool.query(`Select email from public.users where email = '${email}'`);
+    if (ExistingUser.rows.length > 0) {
+        res.send({
+            message: "User already Exist",
+        })
+    }
+
     const result = await Pool.query(`INSERT INTO public.users(name,email,password)VALUES ('${name}','${email}','${encryptedPassword}')`);
     if (result) {
         res.send({
-            message: "SignUp Successful"
+            message: "success"
         })
     } else {
         res.send({
-            message: "failed"
+            message: "exists"
         })
     }
 }
 const Login = async (req, res) => {
-    const result = await Pool.query("Select * from users");
-    res.send(result)
+    const { email, password } = req.body.data;
+    const result = await Pool.query(`Select * from users where email = '${email}'`);
+    if (result) {
+        bcrypt.compare(password, result.rows[0].password, function (err, result) {
+            if (result) {
+                res.send({
+                    message: "successs"
+                })
+            } else {
+                res.send({
+                    message: "invalid"
+                })
+            }
+        })
+    } else {
+        res.send({
+            message: "exists"
+        })
+    }
 }
-
 
 
 
