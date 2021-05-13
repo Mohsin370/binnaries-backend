@@ -1,5 +1,6 @@
 const Pool = require('../Models/db');
 const bcrypt = require('bcrypt');
+var jwt = require("jsonwebtoken");
 
 const encryptPassword = async (Password) => {
     let promise = new Promise((res, rej) => {
@@ -35,14 +36,19 @@ const SignUp = async (req, res) => {
         })
     }
 }
+
+
 const Login = async (req, res) => {
     const { email, password } = req.body.data;
     const result = await Pool.query(`Select * from users where email = '${email}'`);
     if (result) {
         bcrypt.compare(password, result.rows[0].password, function (err, result) {
             if (result) {
+                var token = jwt.sign(email, 'supersecret');
                 res.send({
-                    message: "successs"
+                    message: "success",
+                    email,
+                    token,
                 })
             } else {
                 res.send({
