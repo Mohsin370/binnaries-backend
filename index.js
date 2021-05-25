@@ -1,5 +1,6 @@
 const express = require('express');
 const userController = require('./src/controllers/usersController');
+const accountsController = require('./src/controllers/accountsController');
 
 
 
@@ -11,6 +12,8 @@ const userController = require('./src/controllers/usersController');
 
 const app = express();
 app.use(express.json());
+require('dotenv').config();
+
 
 app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -26,6 +29,11 @@ app.use(function (req, res, next) {
 //User Routes
 app.post('/users/signup', userController.SignUp);
 app.post('/users/login', userController.Login);
+
+
+//accounts Routes
+app.post('/accounts/addCard', accountsController.addCardDetails);
+app.get('/accounts/getAccounts', accountsController.getAccounts);
 
 
 app.listen(process.env.PORT || 4000);

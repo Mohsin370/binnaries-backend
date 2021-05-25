@@ -41,11 +41,10 @@ const SignUp = async (req, res) => {
 const Login = async (req, res) => {
     const { email, password } = req.body.data;
     const result = await Pool.query(`Select * from users where email = '${email}'`);
-    console.log(result);
     if (result.rows.length>0) {
         bcrypt.compare(password, result.rows[0].password, function (err, result) {
             if (result) {
-                var token = jwt.sign(email, 'supersecret');
+                var token = jwt.sign(email, process.env.JWT_SECRET);
                 res.send({
                     message: "success",
                     email,
