@@ -1,6 +1,7 @@
 const express = require('express');
 const userController = require('./src/controllers/usersController');
 const accountsController = require('./src/controllers/accountsController');
+const {sequelize} = require('./models')
 
 
 
@@ -36,4 +37,6 @@ app.post('/accounts/addCard', accountsController.addCardDetails);
 app.get('/accounts/getAccounts', accountsController.getAccounts);
 
 
-app.listen(process.env.PORT || 4000);
+app.listen(process.env.PORT || 4000,  async ()=>{
+  await sequelize.authenticate().then((res)=>{  });
+});
