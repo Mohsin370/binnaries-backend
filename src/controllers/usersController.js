@@ -1,6 +1,7 @@
 const Pool = require('../Models/db');
 const bcrypt = require('bcrypt');
 var jwt = require("jsonwebtoken");
+const { Users } = require('../../models')
 
 const encryptPassword = async (Password) => {
     let promise = new Promise((res, rej) => {
@@ -18,22 +19,35 @@ const SignUp = async (req, res) => {
     const { email, name, password } = req.body.data;
     let encryptedPassword = await encryptPassword(password);
 
-    const ExistingUser = await Pool.query(`Select email from public.users where email = '${email}'`);
-    if (ExistingUser.rows.length > 0) {
-        res.send({
-            message: "User already Exist",
-        })
+    try {
+
+        const ExistingUser = await Users.findAll({
+            where: { email: email }
+        });
+
+        if (ExistingUser.length > 1) {
+            res.send({
+                message: "User already Exist",
+            })
+            return 0
+        }
+    } catch (err) {
+        console.log(err);
     }
 
-    const result = await Pool.query(`INSERT INTO public.users(name,email,password)VALUES ('${name}','${email}','${encryptedPassword}')`);
-    if (result) {
-        res.send({
-            message: "success"
-        })
-    } else {
-        res.send({
-            message: "exists"
-        })
+    try {
+        let result = await Users.create({ name, email, password: encryptedPassword })
+        if (result) {
+            res.send({
+                message: "success"
+            })
+        } else {
+            res.send({
+                message: "exists"
+            })
+        }
+    } catch (err) {
+        console.log(err);
     }
 }
 
@@ -41,7 +55,7 @@ const SignUp = async (req, res) => {
 const Login = async (req, res) => {
     const { email, password } = req.body.data;
     const result = await Pool.query(`Select * from users where email = '${email}'`);
-    if (result.rows.length>0) {
+    if (result.rows.length > 0) {
         bcrypt.compare(password, result.rows[0].password, function (err, result) {
             if (result) {
                 var token = jwt.sign(email, process.env.JWT_SECRET);
