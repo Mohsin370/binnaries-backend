@@ -25,7 +25,7 @@ const SignUp = async (req, res) => {
             where: { email: email }
         });
 
-        if (ExistingUser.length > 1) {
+        if (ExistingUser.length > 0) {
             res.send({
                 message: "User already Exist",
             })
