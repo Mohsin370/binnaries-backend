@@ -2,13 +2,10 @@ const express = require("express");
 const userController = require("./src/controllers/usersController");
 const accountsController = require("./src/controllers/accountsController");
 const { sequelize } = require("./models");
-var cors = require('cors')
-
 
 const app = express();
 app.use(express.json());
 require("dotenv").config();
-app.use(cors())
 
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");
