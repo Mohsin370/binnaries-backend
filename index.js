@@ -9,6 +9,8 @@ const app = express();
 app.use(express.json());
 require("dotenv").config();
 
+app.use(cors())
+
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -24,7 +26,6 @@ app.use(function (req, res, next) {
   }
   next();
 });
-app.use(cors())
 
 //test call
 app.get("/",(req,res)=>res.send("Server Running"))
