@@ -124,9 +124,8 @@ const editAccounts = async (req, res) => {
         },
         { where: { id: id } }
       );
-      console.log("testtttttttttt:        ", id);
       if (result) {
-        res.send(result);
+        res.send({ message: "success" });
       } else {
         res.send({
           message: "DBError",
