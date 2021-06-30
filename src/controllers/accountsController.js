@@ -52,7 +52,7 @@ const getAccounts = async (req, res) => {
       const result = await accounts.findAll({
         where: { email: decodedJWT },
       });
-      if (result.length > 0) {
+      if (result) {
         res.send({
           message: "success",
           accounts: result,
