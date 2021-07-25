@@ -53,29 +53,35 @@ const SignUp = async (req, res) => {
 
 const Login = async (req, res) => {
     const { email, password } = req.body.data;
-    const result = await await Users.findAll({
-        where: { email: email }
-    });
-    console.log(result)
-    if (result.length > 0) {
-        bcrypt.compare(password, result[0].password, function (err, result) {
-            if (result) {
-                var token = jwt.sign(email, process.env.JWT_SECRET);
-                res.send({
-                    message: "success",
-                    email,
-                    token,
-                })
-            } else {
-                res.send({
-                    message: "invalid"
-                })
-            }
-        })
-    } else {
-        res.send({
-            message: "email_invalid"
-        })
+    try {
+
+        const result = await Users.findAll({
+            where: { email: email }
+        });
+        console.log(result)
+
+        if (result.length > 0) {
+            bcrypt.compare(password, result[0].password, function (err, result) {
+                if (result) {
+                    var token = jwt.sign(email, process.env.JWT_SECRET);
+                    res.send({
+                        message: "success",
+                        email,
+                        token,
+                    })
+                } else {
+                    res.send({
+                        message: "invalid"
+                    })
+                }
+            })
+        } else {
+            res.send({
+                message: "email_invalid"
+            })
+        }
+    } catch (err) {
+        console.log("err", err);
     }
 }
 

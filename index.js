@@ -39,5 +39,7 @@ app.post("/accounts/editAccounts", accountsController.editAccounts);
 
 
 app.listen(process.env.PORT || 4000, async () => {
-  await sequelize.authenticate().then((res) => {});
+  await sequelize.authenticate().then((res) => {
+    console.log("Authenticated")
+  });
 });
