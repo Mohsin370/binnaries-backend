@@ -86,8 +86,34 @@ const Login = async (req, res) => {
 }
 
 
+const EditProfileDetails = async (req, res) => {
+    const { token,name } = req.body.data;
+    let decodedJWT = jwt.verify(
+        token,
+        process.env.JWT_SECRET,
+        function (err, decoded) {
+            return decoded;
+        }
+    );
+    if (decodedJWT) {
+        try {
+            res.send({
+                message:'success'
+            })
+        } catch (err) {
+            console.log(err);
+        }
+    } else {
+        res.send({
+            message: "invalid_token",
+        });
+    }
+}
+
+
 
 module.exports = {
     SignUp,
-    Login
+    Login,
+    EditProfileDetails
 }

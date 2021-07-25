@@ -29,6 +29,7 @@ app.get("/",(req,res)=>res.send("Server Running"))
 //User Routes
 app.post("/users/signup", userController.SignUp);
 app.post("/users/login", userController.Login);
+app.post("/users/editProfile", userController.EditProfileDetails);
 
 //accounts Routes
 app.post("/accounts/addCard", accountsController.addCardDetails);
