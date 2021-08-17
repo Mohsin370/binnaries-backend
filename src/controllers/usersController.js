@@ -3,6 +3,8 @@ var jwt = require("jsonwebtoken");
 const { Users } = require("../../models");
 var cloudinary = require("cloudinary").v2;
 
+
+
 const encryptPassword = async (Password) => {
   let promise = new Promise((res, rej) => {
     let saltRounds = 10;
@@ -16,12 +18,7 @@ const encryptPassword = async (Password) => {
     return res;
   });
 };
-cloudinary.config({
-  cloud_name: "khawaja",
-  api_key: "227528723768797",
-  api_secret: "24EueIlrkrn2RmWaXEFrBqnMAcY",
-  secure: true,
-});
+
 
 const SignUp = async (req, res) => {
   const { email, name, password } = req.body.data;
@@ -68,16 +65,21 @@ const Login = async (req, res) => {
     const result = await Users.findAll({
       where: { email: email },
     });
-    console.log(result);
 
     if (result.length > 0) {
-      bcrypt.compare(password, result[0].password, function (err, result) {
-        if (result) {
+      bcrypt.compare(password, result[0].password, function (err, response) {
+        if (response) {
           var token = jwt.sign(email, process.env.JWT_SECRET);
-          res.send({
-            message: "success",
-            email,
+          let userData = {
+            uuid: result[0].uuid,
             token,
+            name: result[0].name,
+            email: result[0].email,
+            profile_img:result[0].profile_img
+          }
+          res.send({
+            userData,
+            message: "success",
           });
         } else {
           res.send({
@@ -96,7 +98,8 @@ const Login = async (req, res) => {
 };
 
 const EditProfileDetails = async (req, res) => {
-  const { token, name, image } = req.body.data;
+
+  const { token, name, image, uuid } = req.body.data;
   let decodedJWT = jwt.verify(
     token,
     process.env.JWT_SECRET,
@@ -106,10 +109,24 @@ const EditProfileDetails = async (req, res) => {
   );
   if (decodedJWT) {
     try {
-      cloudinary.uploader.upload(image, function (error, result) {
-        console.log(result, error);
+      let uploadImageData = await cloudinary.uploader.upload_large(image, {
+        resource_type: "image"
+      }, function (error, result) {
       });
-
+      console.log(uuid);
+      if (uploadImageData.url) {
+        await Users.update({ name, profile_img: uploadImageData.url }, {
+          where: {
+            uuid
+          }
+        })
+      } else {
+        await Users.update({ name }, {
+          where: {
+            uuid,
+          }
+        })
+      }
       res.send({
         message: "success",
       });

@@ -2,9 +2,11 @@ const express = require("express");
 const userController = require("./src/controllers/usersController");
 const accountsController = require("./src/controllers/accountsController");
 const { sequelize } = require("./models");
+var cloudinary = require("cloudinary").v2;
+
 
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
 require("dotenv").config();
 
 app.use(function (req, res, next) {
@@ -23,8 +25,9 @@ app.use(function (req, res, next) {
   next();
 });
 
+
 //test call
-app.get("/",(req,res)=>res.send("Server Running"))
+app.get("/", (req, res) => res.send("Server Running"))
 
 //User Routes
 app.post("/users/signup", userController.SignUp);
@@ -42,5 +45,11 @@ app.post("/accounts/editAccounts", accountsController.editAccounts);
 app.listen(process.env.PORT || 4000, async () => {
   await sequelize.authenticate().then((res) => {
     console.log("Authenticated")
+    cloudinary.config({
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+      secure: true,
+    });
   });
 });
