@@ -75,7 +75,7 @@ const Login = async (req, res) => {
             token,
             name: result[0].name,
             email: result[0].email,
-            profile_img:result[0].profile_img
+            profile_img: result[0].profile_img
           }
           res.send({
             userData,
@@ -121,7 +121,7 @@ const EditProfileDetails = async (req, res) => {
         })
         res.send({
           message: "success",
-          profile_img:uploadImageData.url,
+          profile_img: uploadImageData.url,
         });
       } else {
         await Users.update({ name }, {
@@ -158,17 +158,69 @@ const GetProfileDetails = async (req, res) => {
   if (decodedJWT) {
     try {
       const result = await Users.findAll({
-        attributes:['name','email','profile_img'],
+        attributes: ['name', 'email', 'profile_img'],
         where: {
           uuid,
         }
       })
       res.send(result[0])
-      
+
     } catch (err) {
       console.log(err);
       res.send({
-        message:"something went wrong",
+        message: "something went wrong",
+        err,
+      })
+    }
+  } else {
+    res.send({
+      message: "invalid_token",
+    });
+  }
+};
+
+const ChangePassword = async (req, res) => {
+
+  const { token, uuid, currentPassword, newPassword } = req.body.data;
+  let decodedJWT = jwt.verify(
+    token,
+    process.env.JWT_SECRET,
+    function (err, decoded) {
+      return decoded;
+    }
+  );
+  if (decodedJWT) {
+    try {
+
+      let result = await Users.findAll({
+        attributes: ['password'],
+        where: {
+          uuid,
+        }
+      }
+      )
+      console.log(result);
+      bcrypt.compare(currentPassword, result[0].password, async function (err, response) {
+        if (response) {
+          let encryptedPassword = await encryptPassword(newPassword);
+          await Users.update({ password: encryptedPassword }, {
+            where: {
+              uuid
+            }
+          })
+          res.send({
+            message: "success",
+          });
+        } else {
+          res.send({
+            message: "Old password is not correct",
+          });
+        }
+      });
+    } catch (err) {
+      console.log(err);
+      res.send({
+        message: "something went wrong",
         err,
       })
     }
@@ -184,4 +236,5 @@ module.exports = {
   Login,
   EditProfileDetails,
   GetProfileDetails,
+  ChangePassword,
 };

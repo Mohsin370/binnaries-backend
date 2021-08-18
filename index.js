@@ -34,6 +34,7 @@ app.post("/users/signup", userController.SignUp);
 app.post("/users/login", userController.Login);
 app.post("/users/editProfile", userController.EditProfileDetails);
 app.post("/users/getProfile", userController.GetProfileDetails);
+app.post("/users/changePassword", userController.ChangePassword);
 
 //accounts Routes
 app.post("/accounts/addCard", accountsController.addCardDetails);
