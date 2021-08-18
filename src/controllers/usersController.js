@@ -113,25 +113,64 @@ const EditProfileDetails = async (req, res) => {
         resource_type: "image"
       }, function (error, result) {
       });
-      console.log(uuid);
       if (uploadImageData.url) {
         await Users.update({ name, profile_img: uploadImageData.url }, {
           where: {
             uuid
           }
         })
+        res.send({
+          message: "success",
+          profile_img:uploadImageData.url,
+        });
       } else {
         await Users.update({ name }, {
           where: {
             uuid,
           }
         })
+        res.send({
+          message: "success",
+        });
       }
-      res.send({
-        message: "success",
-      });
+
     } catch (err) {
       console.log(err);
+    }
+  } else {
+    res.send({
+      message: "invalid_token",
+    });
+  }
+};
+
+
+const GetProfileDetails = async (req, res) => {
+
+  const { token, uuid } = req.body.data;
+  let decodedJWT = jwt.verify(
+    token,
+    process.env.JWT_SECRET,
+    function (err, decoded) {
+      return decoded;
+    }
+  );
+  if (decodedJWT) {
+    try {
+      const result = await Users.findAll({
+        attributes:['name','email','profile_img'],
+        where: {
+          uuid,
+        }
+      })
+      res.send(result[0])
+      
+    } catch (err) {
+      console.log(err);
+      res.send({
+        message:"something went wrong",
+        err,
+      })
     }
   } else {
     res.send({
@@ -144,4 +183,5 @@ module.exports = {
   SignUp,
   Login,
   EditProfileDetails,
+  GetProfileDetails,
 };
