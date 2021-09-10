@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Users.hasMany(models.customers,{foreignKey: 'uuid',allowNull:false})
     }
   };
   Users.init({
@@ -18,7 +19,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       primaryKey: true,
       defaultValue: DataTypes.UUIDV4
-
+    },
+    id: {
+      allowNull: false,
+      autoIncrement: true,
+      type: DataTypes.INTEGER
     },
     email: {
       type: DataTypes.STRING,

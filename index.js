@@ -1,6 +1,7 @@
 const express = require("express");
 const userController = require("./src/controllers/usersController");
 const accountsController = require("./src/controllers/accountsController");
+const customersController = require("./src/controllers/customersController");
 const { sequelize } = require("./models");
 var cloudinary = require("cloudinary").v2;
 
@@ -41,6 +42,12 @@ app.post("/accounts/addCard", accountsController.addCardDetails);
 app.get("/accounts/getAccounts", accountsController.getAccounts);
 app.post("/accounts/deleteAccounts", accountsController.deleteAccounts);
 app.post("/accounts/editAccounts", accountsController.editAccounts);
+
+
+//customer Routes
+
+app.post("/customers/addCustomer", customersController.addCustomer);
+app.get("/customers/getCustomers", customersController.getCustomer);
 
 
 
