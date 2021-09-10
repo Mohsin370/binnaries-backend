@@ -56,6 +56,10 @@ const SignUp = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
+    res.send({
+      message:'Error',
+      err,
+    })
   }
 };
 
@@ -94,6 +98,10 @@ const Login = async (req, res) => {
     }
   } catch (err) {
     console.log("err", err);
+    res.send({
+      message:'Error',
+      err,
+    })
   }
 };
 
