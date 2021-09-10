@@ -44,6 +44,7 @@ const addCustomer = async (req, res) => {
 
 const getCustomer = async (req, res) => {
   const {token,uuid} = req.query;
+  console.log(req.query);
   let decodedJWT = jwt.verify(
     token,
     process.env.JWT_SECRET,
@@ -61,7 +62,7 @@ const getCustomer = async (req, res) => {
       if (result) {
         res.send({
           message: "success",
-          accounts: result,
+          customers: result,
         });
       } else {
         res.send({
