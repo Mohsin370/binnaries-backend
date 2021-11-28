@@ -2,15 +2,7 @@ var jwt = require("jsonwebtoken");
 const { accounts } = require("../../models");
 
 const addCardDetails = async (req, res) => {
-  const { accNo, accTitle, bankName, cardNo, token } = req.body.data;
-  let decodedJWT = jwt.verify(
-    token,
-    process.env.JWT_SECRET,
-    function (err, decoded) {
-      return decoded;
-    }
-  );
-  if (decodedJWT) {
+  const { accNo, accTitle, bankName, cardNo } = req.body.data;
     try {
       let result = await accounts.create({
         acc_no: accNo,
@@ -24,33 +16,21 @@ const addCardDetails = async (req, res) => {
           message: "success",
         });
       } else {
-        res.send({
-          message: "DBError",
+        res.status(500).send({
+          message: "Unable to Add Card Details",
         });
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      res.status(500).send(error);
+      console.log(error);
     }
-  } else {
-    res.send({
-      message: "invalid_token",
-    });
-  }
 };
 
 const getAccounts = async (req, res) => {
-  const token = req.query.token;
-  let decodedJWT = jwt.verify(
-    token,
-    process.env.JWT_SECRET,
-    function (err, decoded) {
-      return decoded;
-    }
-  );
-  if (decodedJWT) {
+    const uuid = req.params.uuid 
     try {
       const result = await accounts.findAll({
-        where: { email: decodedJWT },
+        where: { uuid },
       });
       if (result) {
         res.send({
@@ -65,23 +45,10 @@ const getAccounts = async (req, res) => {
     } catch (err) {
       console.log(err);
     }
-  } else {
-    res.send({
-      message: "invalid_token",
-    });
-  }
 };
 
 const deleteAccounts = async (req, res) => {
-  const { id, token } = req.body.data;
-  let decodedJWT = jwt.verify(
-    token,
-    process.env.JWT_SECRET,
-    function (err, decoded) {
-      return decoded;
-    }
-  );
-  if (decodedJWT) {
+  const { id } = req.body.data;
     try {
       let result = await accounts.destroy({ where: { id: id } });
       if (result) {
@@ -96,24 +63,11 @@ const deleteAccounts = async (req, res) => {
     } catch (err) {
       console.log(err);
     }
-  } else {
-    res.send({
-      message: "invalid_token",
-    });
-  }
 };
 
 const editAccounts = async (req, res) => {
-  const { accNo, accTitle, bankName, cardNo, token, id } = req.body.data;
+  const { accNo, accTitle, bankName, cardNo, id } = req.body.data;
 
-  let decodedJWT = jwt.verify(
-    token,
-    process.env.JWT_SECRET,
-    function (err, decoded) {
-      return decoded;
-    }
-  );
-  if (decodedJWT) {
     try {
       let result = await accounts.update(
         {
@@ -134,11 +88,6 @@ const editAccounts = async (req, res) => {
     } catch (err) {
       console.log(err);
     }
-  } else {
-    res.send({
-      message: "invalid_token",
-    });
-  }
 };
 
 module.exports = {
