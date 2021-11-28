@@ -3,15 +3,8 @@ const {customers} = require("../../models");
 const {Users} = require("../../models");
 
 const addCustomer = async (req, res) => {
-  const { name, companyName, description, location, token, uuid } = req.body.data;
-  let decodedJWT = jwt.verify(
-    token,
-    process.env.JWT_SECRET,
-    function (err, decoded) {
-      return decoded;
-    }
-  );
-  if (decodedJWT) {
+  const { name, companyName, description, location, uuid } = req.body.data;
+
     try {
       let result = await customers.create({
         name,
@@ -35,24 +28,11 @@ const addCustomer = async (req, res) => {
           err,
       })
     }
-  } else {
-    res.send({
-      message: "invalid_token",
-    });
-  }
 };
 
 const getCustomer = async (req, res) => {
-  const {token,uuid} = req.query;
-  console.log(req.query);
-  let decodedJWT = jwt.verify(
-    token,
-    process.env.JWT_SECRET,
-    function (err, decoded) {
-      return decoded;
-    }
-  );
-  if (decodedJWT) {
+  const {uuid} = req.query;
+
     try {
       const result = await customers.findAll({
           where:{
@@ -69,17 +49,12 @@ const getCustomer = async (req, res) => {
           message: "DBError",
         });
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
       res.send({
-          error:err
+          error
       })
     }
-  } else {
-    res.send({
-      message: "invalid_token",
-    });
-  }
 };
 
 module.exports = {
