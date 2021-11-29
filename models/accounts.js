@@ -34,6 +34,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BIGINT,
       allowNull:false,
     },
+    user_id: {
+      type: DataTypes.UUID,
+    }
   }, {
     sequelize,
     tableName:'accounts',

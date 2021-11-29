@@ -45,13 +45,13 @@ app.get("/", (req, res) => res.send("Server Running"))
 //User Routes
 app.post("/users/signup", userController.SignUp);
 app.post("/users/login", userController.Login);
-app.post("/users/editProfile", AuthMiddleware.authenticateUser, userController.EditProfileDetails);
+app.post("/users/:uuid/editProfile", AuthMiddleware.authenticateUser, userController.EditProfileDetails);
 app.get("/users/:uuid/getProfile", AuthMiddleware.authenticateUser, userController.GetProfileDetails);
-app.post("/users/changePassword", AuthMiddleware.authenticateUser, userController.ChangePassword);
+app.post("/users/:uuid/changePassword", AuthMiddleware.authenticateUser, userController.ChangePassword);
 
 //accounts Routes
+app.get("/accounts/users/:uuid/getAccounts", AuthMiddleware.authenticateUser, accountsController.getAccounts);
 app.post("/accounts/addCard", AuthMiddleware.authenticateUser, accountsController.addCardDetails);
-app.get("/accounts/getAccounts", AuthMiddleware.authenticateUser, accountsController.getAccounts);
 app.post("/accounts/deleteAccounts", AuthMiddleware.authenticateUser, accountsController.deleteAccounts);
 app.post("/accounts/editAccounts", AuthMiddleware.authenticateUser, accountsController.editAccounts);
 

@@ -72,7 +72,7 @@ const Login = async (req, res) => {
                 if (response) {
                     var token = jwt.sign(email, process.env.JWT_SECRET);
                     let userData = {
-                        uuid: result[0].uuid,
+                        uuid: result[0].id,
                         token,
                         name: result[0].name,
                         email: result[0].email,
@@ -103,34 +103,36 @@ const Login = async (req, res) => {
 };
 
 const EditProfileDetails = async (req, res) => {
-    const { name, image, uuid } = req.body.data;
+    const uuid = req.params.uuid;
+    const { name, image } = req.body.data;
     try {
-        let uploadImageData = await cloudinary.uploader.upload_large(
-            image,
-            {
-                resource_type: "image",
-            },
-            function (error, result) { }
-        );
-        if (uploadImageData.url) {
-            await Users.update(
-                { name, profile_img: uploadImageData.url },
+        if (image) {
+            let uploadImageData = await cloudinary.uploader.upload_large(
+                image,
                 {
-                    where: {
-                        uuid,
-                    },
-                }
+                    resource_type: "image",
+                },
             );
-            res.send({
-                message: "success",
-                profile_img: uploadImageData.url,
-            });
+            if (uploadImageData.url) {
+                await Users.update(
+                    { name, profile_img: uploadImageData.url },
+                    {
+                        where: {
+                            id: uuid,
+                        },
+                    }
+                );
+                res.send({
+                    message: "success",
+                    profile_img: uploadImageData.url,
+                });
+            }
         } else {
             await Users.update(
                 { name },
                 {
                     where: {
-                        uuid,
+                        id: uuid,
                     },
                 }
             );
@@ -138,8 +140,9 @@ const EditProfileDetails = async (req, res) => {
                 message: "success",
             });
         }
-    } catch (err) {
-        console.log(err);
+    } catch (error) {
+        console.error(error)
+        res.status(500).send({ error })
     }
 };
 
@@ -149,13 +152,13 @@ const GetProfileDetails = async (req, res) => {
         const result = await Users.findAll({
             attributes: ["name", "email", "profile_img"],
             where: {
-                uuid,
+                id: uuid,
             },
         });
         res.send(result[0]);
     } catch (err) {
         console.log(err);
-        res.send({
+        res.status(500).send({
             message: "something went wrong",
             err,
         });
@@ -163,15 +166,15 @@ const GetProfileDetails = async (req, res) => {
 };
 
 const ChangePassword = async (req, res) => {
-    const { uuid, currentPassword, newPassword } = req.body.data;
+    const uuid = req.params.uuid;
+    const { currentPassword, newPassword } = req.body.data;
     try {
         let result = await Users.findAll({
             attributes: ["password"],
             where: {
-                uuid,
+                id: uuid,
             },
         });
-        console.log(result);
         bcrypt.compare(
             currentPassword,
             result[0].password,
@@ -182,7 +185,7 @@ const ChangePassword = async (req, res) => {
                         { password: encryptedPassword },
                         {
                             where: {
-                                uuid,
+                                id: uuid,
                             },
                         }
                     );
@@ -190,7 +193,7 @@ const ChangePassword = async (req, res) => {
                         message: "success",
                     });
                 } else {
-                    res.send({
+                    res.statu(400).send({
                         message: "Old password is not correct",
                     });
                 }

@@ -1,10 +1,10 @@
 var jwt = require("jsonwebtoken");
-const { accounts } = require("../../models");
+const { Accounts } = require("../../models");
 
 const addCardDetails = async (req, res) => {
   const { accNo, accTitle, bankName, cardNo } = req.body.data;
     try {
-      let result = await accounts.create({
+      let result = await Accounts.create({
         acc_no: accNo,
         email: decodedJWT,
         acc_title: accTitle,
@@ -29,8 +29,8 @@ const addCardDetails = async (req, res) => {
 const getAccounts = async (req, res) => {
     const uuid = req.params.uuid 
     try {
-      const result = await accounts.findAll({
-        where: { uuid },
+      const result = await Accounts.findAll({
+        where: { user_id:uuid },
       });
       if (result) {
         res.send({
@@ -38,12 +38,15 @@ const getAccounts = async (req, res) => {
           accounts: result,
         });
       } else {
-        res.send({
-          message: "DBError",
+        res.statu(500).send({
+          message: "Could not get accounts",
         });
       }
     } catch (err) {
       console.log(err);
+      res.status(500).send({
+        message: "Could not get accounts",
+      });
     }
 };
 
