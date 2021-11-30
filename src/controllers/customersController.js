@@ -1,60 +1,57 @@
-var jwt = require("jsonwebtoken");
-const {customers} = require("../../models");
-const {Users} = require("../../models");
+const { Customers } = require("../../models");
 
 const addCustomer = async (req, res) => {
-  const { name, companyName, description, location, uuid } = req.body.data;
+  const { name, companyName, description, location, user_id } = req.body.data;
 
-    try {
-      let result = await customers.create({
-        name,
-        companyName,
-        description,
-        location,
-        uuid
-      });
-      if (result) {
-        res.send({
-          message: "success",
-        });
-      } else {
-        res.send({
-          message: "DBError",
-        });
-      }
-    } catch (err) {
-      console.log(err);
+  try {
+    let result = await Customers.create({
+      name,
+      companyName,
+      description,
+      location,
+      user_id,
+    });
+    if (result) {
       res.send({
-          err,
-      })
+        message: "success",
+      });
+    } else {
+      res.status(500).send({
+        message: "DBError",
+      });
     }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      error,
+    });
+  }
 };
 
 const getCustomer = async (req, res) => {
-  const {uuid} = req.query;
-
-    try {
-      const result = await customers.findAll({
-          where:{
-              uuid
-          }
-      })
-      if (result) {
-        res.send({
-          message: "success",
-          customers: result,
-        });
-      } else {
-        res.send({
-          message: "DBError",
-        });
-      }
-    } catch (error) {
-      console.log(error);
+  const { user_id } = req.params;
+  try {
+    const result = await Customers.findAll({
+      where: {
+        user_id,
+      },
+    });
+    if (result) {
       res.send({
-          error
-      })
+        message: "success",
+        customers: result,
+      });
+    } else {
+      res.send({
+        message: "DBError",
+      });
     }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      error,
+    });
+  }
 };
 
 module.exports = {

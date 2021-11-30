@@ -52,14 +52,14 @@ app.post("/users/:uuid/changePassword", AuthMiddleware.authenticateUser, userCon
 //accounts Routes
 app.get("/accounts/users/:uuid/getAccounts", AuthMiddleware.authenticateUser, accountsController.getAccounts);
 app.post("/accounts/addCard", AuthMiddleware.authenticateUser, accountsController.addCardDetails);
-app.post("/accounts/deleteAccounts", AuthMiddleware.authenticateUser, accountsController.deleteAccounts);
-app.post("/accounts/editAccounts", AuthMiddleware.authenticateUser, accountsController.editAccounts);
+app.post("/accounts/:id/deleteAccounts", AuthMiddleware.authenticateUser, accountsController.deleteAccounts);
+app.put("/accounts/:id/editAccounts", AuthMiddleware.authenticateUser, accountsController.editAccounts);
 
 
 //customer Routes
 
-app.post("/customers/addCustomer", AuthMiddleware.authenticateUser, customersController.addCustomer);
-app.get("/customers/getCustomers", AuthMiddleware.authenticateUser, customersController.getCustomer);
+app.post("/customers/users/addCustomer", AuthMiddleware.authenticateUser, customersController.addCustomer);
+app.get("/customers/users/:user_id/getCustomers", AuthMiddleware.authenticateUser, customersController.getCustomer);
 
 
 

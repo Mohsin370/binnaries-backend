@@ -18,10 +18,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BIGINT,
       allowNull:false,
     },
-    email: {
-      type: DataTypes.STRING,
-      allowNull:false,
-    },
     acc_title:{
       type: DataTypes.STRING,
       allowNull:false,

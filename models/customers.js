@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Customers.belongsTo(models.Users,{foreignKey:{name:'uuid',allowNull:false}})
+      Customers.belongsTo(models.Users,{foreignKey:{name:'user_id',allowNull:false}})
     }
   };
   Customers.init({
@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },    
-    uuid: {
+    user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
