@@ -24,12 +24,12 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      uuid: {
+      user_id: {
         type: Sequelize.UUID,
         allowNull: false,
         references: {        
-          model: 'Users',
-          key: 'uuid'
+          model: 'users',
+          key: 'id'
         }
       },
       createdAt: {

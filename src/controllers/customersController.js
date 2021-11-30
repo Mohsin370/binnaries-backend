@@ -1,83 +1,55 @@
-var jwt = require("jsonwebtoken");
-const {customers} = require("../../models");
-const {Users} = require("../../models");
+const { Customers } = require("../../models");
 
 const addCustomer = async (req, res) => {
-  const { name, companyName, description, location, token, uuid } = req.body.data;
-  let decodedJWT = jwt.verify(
-    token,
-    process.env.JWT_SECRET,
-    function (err, decoded) {
-      return decoded;
-    }
-  );
-  if (decodedJWT) {
-    try {
-      let result = await customers.create({
-        name,
-        companyName,
-        description,
-        location,
-        uuid
-      });
-      if (result) {
-        res.send({
-          message: "success",
-        });
-      } else {
-        res.send({
-          message: "DBError",
-        });
-      }
-    } catch (err) {
-      console.log(err);
+  const { name, companyName, description, location, user_id } = req.body.data;
+
+  try {
+    let result = await Customers.create({
+      name,
+      companyName,
+      description,
+      location,
+      user_id,
+    });
+    if (result) {
       res.send({
-          err,
-      })
+        message: "success",
+      });
+    } else {
+      res.status(500).send({
+        message: "DBError",
+      });
     }
-  } else {
-    res.send({
-      message: "invalid_token",
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      error,
     });
   }
 };
 
 const getCustomer = async (req, res) => {
-  const {token,uuid} = req.query;
-  console.log(req.query);
-  let decodedJWT = jwt.verify(
-    token,
-    process.env.JWT_SECRET,
-    function (err, decoded) {
-      return decoded;
-    }
-  );
-  if (decodedJWT) {
-    try {
-      const result = await customers.findAll({
-          where:{
-              uuid
-          }
-      })
-      if (result) {
-        res.send({
-          message: "success",
-          customers: result,
-        });
-      } else {
-        res.send({
-          message: "DBError",
-        });
-      }
-    } catch (err) {
-      console.log(err);
+  const { user_id } = req.params;
+  try {
+    const result = await Customers.findAll({
+      where: {
+        user_id,
+      },
+    });
+    if (result) {
       res.send({
-          error:err
-      })
+        message: "success",
+        customers: result,
+      });
+    } else {
+      res.send({
+        message: "DBError",
+      });
     }
-  } else {
-    res.send({
-      message: "invalid_token",
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      error,
     });
   }
 };
