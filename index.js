@@ -43,23 +43,23 @@ const cloudinaryConfiguration = () => {
 app.get("/", (req, res) => res.send("Server Running"))
 
 //User Routes
-// app.post("/users/signup", userController.SignUp);
-// app.post("/users/login", userController.Login);
-// app.post("/users/:uuid/editProfile", AuthMiddleware.authenticateUser, userController.EditProfileDetails);
-// app.get("/users/:uuid/getProfile", AuthMiddleware.authenticateUser, userController.GetProfileDetails);
-// app.post("/users/:uuid/changePassword", AuthMiddleware.authenticateUser, userController.ChangePassword);
+app.post("/users/signup", userController.SignUp);
+app.post("/users/login", userController.Login);
+app.post("/users/:uuid/editProfile", AuthMiddleware.authenticateUser, userController.EditProfileDetails);
+app.get("/users/:uuid/getProfile", AuthMiddleware.authenticateUser, userController.GetProfileDetails);
+app.post("/users/:uuid/changePassword", AuthMiddleware.authenticateUser, userController.ChangePassword);
 
-// //accounts Routes
-// app.get("/accounts/users/:uuid/getAccounts", AuthMiddleware.authenticateUser, accountsController.getAccounts);
-// app.post("/accounts/addCard", AuthMiddleware.authenticateUser, accountsController.addCardDetails);
-// app.post("/accounts/:id/deleteAccounts", AuthMiddleware.authenticateUser, accountsController.deleteAccounts);
-// app.put("/accounts/:id/editAccounts", AuthMiddleware.authenticateUser, accountsController.editAccounts);
+//accounts Routes
+app.get("/accounts/users/:uuid/getAccounts", AuthMiddleware.authenticateUser, accountsController.getAccounts);
+app.post("/accounts/addCard", AuthMiddleware.authenticateUser, accountsController.addCardDetails);
+app.post("/accounts/:id/deleteAccounts", AuthMiddleware.authenticateUser, accountsController.deleteAccounts);
+app.put("/accounts/:id/editAccounts", AuthMiddleware.authenticateUser, accountsController.editAccounts);
 
 
-// //customer Routes
+//customer Routes
 
-// app.post("/customers/users/addCustomer", AuthMiddleware.authenticateUser, customersController.addCustomer);
-// app.get("/customers/users/:user_id/getCustomers", AuthMiddleware.authenticateUser, customersController.getCustomer);
+app.post("/customers/users/addCustomer", AuthMiddleware.authenticateUser, customersController.addCustomer);
+app.get("/customers/users/:user_id/getCustomers", AuthMiddleware.authenticateUser, customersController.getCustomer);
 
 
 
