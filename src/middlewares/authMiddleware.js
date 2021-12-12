@@ -8,7 +8,7 @@ class AuthMiddleware {
             if (decodedJwt) {
                 next();
             } else {
-                res.send("Token Authentication Failed")
+                res.status(401).send("Token Authentication Failed")
             }
         } catch (err) {
             res.status(401).send(err);

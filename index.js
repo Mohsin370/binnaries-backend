@@ -58,7 +58,9 @@ app.put("/accounts/:id/editAccounts", AuthMiddleware.authenticateUser, accountsC
 
 //customer Routes
 
-app.post("/customers/users/addCustomer", AuthMiddleware.authenticateUser, customersController.addCustomer);
+app.post("/customers/addCustomer", AuthMiddleware.authenticateUser, customersController.addCustomer);
+app.put("/customers/:customer_id/editCustomer", AuthMiddleware.authenticateUser, customersController.editCustomer);
+app.post("/customers/:customer_id/deleteCustomer", AuthMiddleware.authenticateUser, customersController.deleteCustomer);
 app.get("/customers/users/:user_id/getCustomers", AuthMiddleware.authenticateUser, customersController.getCustomer);
 
 

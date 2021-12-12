@@ -17,7 +17,7 @@ const addCustomer = async (req, res) => {
       });
     } else {
       res.status(500).send({
-        message: "DBError",
+        message: "Unable to create customer",
       });
     }
   } catch (error) {
@@ -27,6 +27,47 @@ const addCustomer = async (req, res) => {
     });
   }
 };
+
+const editCustomer = async (req, res) => {
+  try {
+    const { customer_id } = req.params;
+    const editCustomer = await Customers.update(
+      req.body.data, {
+      where: {
+        customer_id
+      }
+    }
+    )
+    if (editCustomer) {
+      res.send({
+        message: 'Customer created successfully'
+      })
+    }
+
+  } catch (error) {
+    res.status(500).send(error);
+  }
+}
+
+const deleteCustomer = async (req, res) => {
+  try {
+    const { customer_id } = req.params;
+    const deleteCustomer = await Customers.destroy({
+      where: {
+        customer_id
+      }
+    }
+    )
+    if (deleteCustomer) {
+      res.send({
+        message: 'Customer deleted successfully'
+      })
+    }
+
+  } catch (error) {
+    res.status(500).send(error);
+  }
+}
 
 const getCustomer = async (req, res) => {
   const { user_id } = req.params;
@@ -42,8 +83,8 @@ const getCustomer = async (req, res) => {
         customers: result,
       });
     } else {
-      res.send({
-        message: "DBError",
+      res.status(404).send({
+        message: "Customer not found",
       });
     }
   } catch (error) {
@@ -57,4 +98,6 @@ const getCustomer = async (req, res) => {
 module.exports = {
   addCustomer,
   getCustomer,
+  editCustomer,
+  deleteCustomer
 };
