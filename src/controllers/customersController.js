@@ -51,10 +51,10 @@ const editCustomer = async (req, res) => {
 
 const deleteCustomer = async (req, res) => {
   try {
-    const { customer_id } = req.params;
+    const { customer_id } = req.body;
     const deleteCustomer = await Customers.destroy({
       where: {
-        customer_id
+        id:customer_id
       }
     }
     )
@@ -65,6 +65,7 @@ const deleteCustomer = async (req, res) => {
     }
 
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 }
