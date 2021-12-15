@@ -96,9 +96,32 @@ const getCustomer = async (req, res) => {
   }
 };
 
+const getCustomerById = async (req, res) => {
+  const { customer_id } = req.params;
+  try {
+    const customer = await Customers.findByPk(customer_id);
+    if (customer) {
+      res.send({
+        message: "success",
+        customer,
+      });
+    } else {
+      res.status(404).send({
+        message: "Customer not found",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      error,
+    });
+  }
+};
+
 module.exports = {
   addCustomer,
   getCustomer,
   editCustomer,
-  deleteCustomer
+  deleteCustomer,
+  getCustomerById
 };

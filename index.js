@@ -62,6 +62,7 @@ app.post("/customers/addCustomer", AuthMiddleware.authenticateUser, customersCon
 app.put("/customers/:customer_id/editCustomer", AuthMiddleware.authenticateUser, customersController.editCustomer);
 app.post("/customers/deleteCustomer", AuthMiddleware.authenticateUser, customersController.deleteCustomer);
 app.get("/customers/users/:user_id/getCustomers", AuthMiddleware.authenticateUser, customersController.getCustomer);
+app.get("/customers/:customer_id/getCustomerById", AuthMiddleware.authenticateUser, customersController.getCustomerById);
 
 
 
