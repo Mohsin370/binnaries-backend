@@ -1,17 +1,17 @@
-const { Customers } = require("../../models");
+const { Products } = require("../../models");
 
-const addCustomer = async (req, res) => {
+const addProduct = async (req, res) => {
   const body = req.body.data;
 
   try {
-    let result = await Customers.create(body);
+    let result = await Products.create(body);
     if (result) {
       res.send({
         message: "success",
       });
     } else {
       res.status(500).send({
-        message: "Unable to create customer",
+        message: "Unable to create Product",
       });
     }
   } catch (error) {
@@ -22,11 +22,11 @@ const addCustomer = async (req, res) => {
   }
 };
 
-const editCustomer = async (req, res) => {
+const editProduct = async (req, res) => {
   try {
-    const { customer_id } = req.params;
+    const { product_id } = req.params;
     const { companyName, description, location, name, type } = req.body.data;
-    const editCustomer = await Customers.update(
+    const editProduct = await Products.update(
       {
         name,
         description,
@@ -35,13 +35,13 @@ const editCustomer = async (req, res) => {
         type,
       }, {
       where: {
-        id: customer_id
+        id: product_id
       }
     }
     )
-    if (editCustomer) {
+    if (editProduct) {
       res.send({
-        message: 'Customer created successfully'
+        message: 'Product created successfully'
       })
     }
 
@@ -51,18 +51,18 @@ const editCustomer = async (req, res) => {
   }
 }
 
-const deleteCustomer = async (req, res) => {
+const deleteProduct = async (req, res) => {
   try {
-    const { customer_id } = req.body;
-    const deleteCustomer = await Customers.destroy({
+    const { product_id } = req.body;
+    const deleteProduct = await Products.destroy({
       where: {
-        id: customer_id
+        id: product_id
       }
     }
     )
-    if (deleteCustomer) {
+    if (deleteProduct) {
       res.send({
-        message: 'Customer deleted successfully'
+        message: 'Product deleted successfully'
       })
     }
 
@@ -72,10 +72,10 @@ const deleteCustomer = async (req, res) => {
   }
 }
 
-const getCustomer = async (req, res) => {
+const getProduct = async (req, res) => {
   const { user_id } = req.params;
   try {
-    const result = await Customers.findAll({
+    const result = await Products.findAll({
       where: {
         user_id,
       },
@@ -83,11 +83,11 @@ const getCustomer = async (req, res) => {
     if (result) {
       res.send({
         message: "success",
-        customers: result,
+        products: result,
       });
     } else {
       res.status(404).send({
-        message: "Customer not found",
+        message: "Product not found",
       });
     }
   } catch (error) {
@@ -98,18 +98,18 @@ const getCustomer = async (req, res) => {
   }
 };
 
-const getCustomerById = async (req, res) => {
-  const { customer_id } = req.params;
+const getProductById = async (req, res) => {
+  const { product_id } = req.params;
   try {
-    const customer = await Customers.findByPk(customer_id);
-    if (customer) {
+    const product = await Products.findByPk(product_id);
+    if (product) {
       res.send({
         message: "success",
-        customer,
+        product,
       });
     } else {
       res.status(404).send({
-        message: "Customer not found",
+        message: "Product not found",
       });
     }
   } catch (error) {
@@ -121,9 +121,9 @@ const getCustomerById = async (req, res) => {
 };
 
 module.exports = {
-  addCustomer,
-  getCustomer,
-  editCustomer,
-  deleteCustomer,
-  getCustomerById
+  addProduct,
+  getProduct,
+  editProduct,
+  deleteProduct,
+  getProductById
 };

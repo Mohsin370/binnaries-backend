@@ -2,6 +2,7 @@ const express = require("express");
 const userController = require("./src/controllers/usersController");
 const accountsController = require("./src/controllers/accountsController");
 const customersController = require("./src/controllers/customersController");
+const productsController = require("./src/controllers/productsController");
 const AuthMiddleware = require('./src/middlewares/authMiddleware');
 const { sequelize } = require("./models");
 var cloudinary = require("cloudinary").v2;
@@ -64,11 +65,20 @@ app.post("/customers/deleteCustomer", AuthMiddleware.authenticateUser, customers
 app.get("/customers/users/:user_id/getCustomers", AuthMiddleware.authenticateUser, customersController.getCustomer);
 app.get("/customers/:customer_id/getCustomerById", AuthMiddleware.authenticateUser, customersController.getCustomerById);
 
+//product Routes
+
+app.post("/products/addProduct", AuthMiddleware.authenticateUser, productsController.addProduct);
+app.put("/products/:product_id/editProduct", AuthMiddleware.authenticateUser, productsController.editProduct);
+app.post("/products/deleteProduct", AuthMiddleware.authenticateUser, productsController.deleteProduct);
+app.get("/products/users/:user_id/getProducts", AuthMiddleware.authenticateUser, productsController.getProduct);
+app.get("/products/:product_id/getProductById", AuthMiddleware.authenticateUser, productsController.getProductById);
+
 
 
 app.listen(process.env.PORT || 5000, async () => {
   await sequelize.authenticate().then((res) => {
-    console.log("Authenticated")
+    console.log("Authenticated");
+    console.log("Server connected at port: ",process.env.PORT || 5000);
     cloudinaryConfiguration();
   });
 });
